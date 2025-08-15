@@ -44,7 +44,11 @@ export class ParkingsService {
   }
 
   findAll() {
-    return this.parkingRepository.find({ relations: ['partner'] });
+    try {
+      return this.parkingRepository.find({ relations: ['partner'] });
+    } catch {
+      throw new BadRequestException();
+    }
   }
 
   async findOne(id: number) {
