@@ -18,8 +18,8 @@ export class HistoryParkingController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.historyParkingService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    return await this.historyParkingService.findOne(+id);
   }
   /* 
   @Patch(':id')
@@ -27,7 +27,7 @@ export class HistoryParkingController {
     return this.historyParkingService.update(+id, updateHistoryParkingDto);
   }
 */
-  @Delete(':id')
+  @Post(':id')
   remove(@Param('id') id: string) {
     return this.historyParkingService.remove(+id);
   }

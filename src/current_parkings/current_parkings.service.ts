@@ -17,7 +17,7 @@ export class CurrentParkingsService {
     @InjectRepository(CurrentParking)
     private parkingCurrentRepository: Repository<CurrentParking>,
     private parkingsService: ParkingsService,
-    private historyParking: HistoryParkingService,
+    private historyParkingService: HistoryParkingService,
   ) {}
   async create(currentParkingDto: CurrentParkingDto) {
     // 1. Validar si la placa ya está en algun parqueadero
@@ -35,7 +35,15 @@ export class CurrentParkingsService {
       currentParkingDto.parking,
     );
 
-    // 3. Crear registro
+    //3. Validar disponibilidad en el parqueadero
+    const isValid = await this.parkingCurrentRepository.countBy({
+      parking: parkingExist,
+    });
+    if (isValid >= parkingExist.capacity) {
+      throw new BadRequestException(`El parqueadero ya alcanzó su cupo maximo`);
+    }
+
+    // 4. Crear registro
     try {
       const current = this.parkingCurrentRepository.create({
         plate: currentParkingDto.plate,
@@ -50,7 +58,9 @@ export class CurrentParkingsService {
   }
 
   async findAll() {
-    const result = await this.parkingCurrentRepository.find();
+    const result = await this.parkingCurrentRepository.find({
+      relations: ['parking'],
+    });
     return result.map((item) => ({
       ...item,
       initDay: moment(item.initDay)
@@ -105,7 +115,7 @@ export class CurrentParkingsService {
   async findOneByPlate(
     plate: string,
     parkingId?: number,
-  ): Promise<CurrentParking[]> {
+  ): Promise<CurrentParking> {
     //1. Validar que exista la placa
     if (!plate) {
       throw new BadRequestException('La placa es obligatoria');
@@ -127,9 +137,9 @@ export class CurrentParkingsService {
       query.andWhere('parking.id = :parkingId', { parkingId });
     }
 
-    const results = await query.getMany();
+    const results = await query.getOne();
 
-    if (!results || results.length === 0) {
+    if (!results) {
       throw new NotFoundException(
         `No se encontraron vehículos con la placa '${plate}'${parkingId ? ` en el parqueadero ${parkingId}` : ''}`,
       );
@@ -149,6 +159,23 @@ export class CurrentParkingsService {
         message: `No se puede Registrar Salida, no existe la placa en el parqueadero"`,
       });
     }
-    return `This action removes a # currentParking`;
+    try {
+      const createHistory = await this.historyParkingService.create({
+        id: currentExist.id,
+        plate: currentExist.plate,
+        initDay: currentExist.initDay,
+        parking: currentExist.parking,
+        Amount: 0,
+        finishDay: moment().tz('America/Bogota').toDate(),
+      });
+
+      if (createHistory) {
+        await this.parkingCurrentRepository.delete(currentExist);
+        return { mensaje: 'Salida registrada' };
+      }
+    } catch (error) {
+      console.log(error);
+      throw new BadRequestException();
+    }
   }
 }

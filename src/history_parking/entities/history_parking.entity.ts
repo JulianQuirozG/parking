@@ -15,7 +15,7 @@ export class HistoryParking {
   @Column()
   finishDay: Date;
 
-  @Column({ default: 0 })
+  @Column({ type: 'float', default: 0 })
   Amount: number;
 
   @ManyToOne(() => Parking, (parking) => parking.history)
