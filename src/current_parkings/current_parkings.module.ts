@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { CurrentParkingsService } from './current_parkings.service';
 import { CurrentParkingsController } from './current_parkings.controller';
 import { CurrentParking } from './entities/current_parking.entity';
@@ -10,7 +10,7 @@ import { HistoryParkingModule } from 'src/history_parking/history_parking.module
   imports: [
     TypeOrmModule.forFeature([CurrentParking]),
     ParkingsModule,
-    HistoryParkingModule,
+    forwardRef(() => HistoryParkingModule),
   ],
   controllers: [CurrentParkingsController],
   providers: [CurrentParkingsService],

@@ -17,7 +17,7 @@ export class HistoryParkingController {
     return this.historyParkingService.findAll();
   }
 
-  @Get(':id')
+  @Get('/plate/:id')
   async findOne(@Param('id') id: string) {
     return await this.historyParkingService.findOne(+id);
   }
@@ -27,8 +27,23 @@ export class HistoryParkingController {
     return this.historyParkingService.update(+id, updateHistoryParkingDto);
   }
 */
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.historyParkingService.remove(+id);
+  @Get('/TopVehicles')
+  async topVehicles() {
+    return await this.historyParkingService.TopTenVehicles();
+  }
+
+  @Get('/firstTime/:id')
+  async firstTime(@Param('id') parkingId: number) {
+    return await this.historyParkingService.firstTimeVehicles(+parkingId);
+  }
+
+  @Get('/TopVehicles/:id')
+  async topVehiclesByPlate(@Param('id') parkingId: number) {
+    return await this.historyParkingService.TopTenVehicles(+parkingId);
+  }
+
+  @Get('/Earnings/:id')
+  async earningsByParkingId(@Param('id') parkingId: number) {
+    return await this.historyParkingService.earnings(+parkingId);
   }
 }
