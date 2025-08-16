@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { IsEmail, IsNotEmpty, MinLength } from 'class-validator';
 import { ROL } from '../enum/users.enum';
 

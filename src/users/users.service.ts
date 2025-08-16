@@ -44,11 +44,15 @@ export class UsersService {
   }
 
   async findOne(id: number): Promise<User> {
+    if (!id) {
+      throw new BadRequestException('Id is required');
+    }
+
     try {
-      if (!id) {
-        throw new BadRequestException();
-      }
-      const user = await this.userRepository.findOne({ where: { id: id } });
+      const user = await this.userRepository
+        .createQueryBuilder('user')
+        .where('user.id = :id', { id })
+        .getOne();
 
       if (!user) {
         throw new NotFoundException(`User with id '${id}' not found`);
@@ -65,20 +69,27 @@ export class UsersService {
 
   async findOneByEmail(email: string): Promise<User> {
     try {
-      let user: User | null = null;
-      user = await this.userRepository.findOne({
-        where: { email: email.toLocaleLowerCase().trim() },
-      });
+      if (!email) {
+        throw new BadRequestException('Email is required');
+      }
+
+      const user = await this.userRepository
+        .createQueryBuilder('user')
+        .where('LOWER(TRIM(user.email)) = :email', {
+          email: email.toLowerCase().trim(),
+        })
+        .getOne();
 
       if (!user) {
         throw new NotFoundException(`User with email '${email}' not found`);
       }
+
       return user;
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw error;
       }
-      throw new BadRequestException();
+      throw new BadRequestException('Invalid request');
     }
   }
 
