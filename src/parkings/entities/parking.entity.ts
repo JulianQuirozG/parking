@@ -1,3 +1,4 @@
+import { CurrentParking } from 'src/current_parkings/entities/current_parking.entity';
 import { HistoryParking } from 'src/history_parking/entities/history_parking.entity';
 import { User } from 'src/users/entities/user.entity';
 import {
@@ -30,6 +31,9 @@ export class Parking {
 
   @ManyToOne(() => User, (user) => user.parkings)
   partner: User;
+
+  @OneToMany(() => CurrentParking, (currentParking) => currentParking.parking)
+  current: [CurrentParking];
 
   @OneToMany(() => HistoryParking, (historyParking) => historyParking.parking)
   history: [HistoryParking];

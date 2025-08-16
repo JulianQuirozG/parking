@@ -9,6 +9,7 @@ import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { ROL } from './enum/users.enum';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -27,7 +28,7 @@ export class UsersService {
         name: createUserDto.name,
         email: createUserDto.email,
         type: ROL.SOCIO,
-        password: createUserDto.password,
+        password: bcrypt.hashSync(createUserDto.password, 10),
       });
       return await this.userRepository.save(user);
     } catch {

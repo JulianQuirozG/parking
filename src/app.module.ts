@@ -10,6 +10,8 @@ import { ParkingsModule } from './parkings/parkings.module';
 import { Parking } from './parkings/entities/parking.entity';
 import { HistoryParkingModule } from './history_parking/history_parking.module';
 import { HistoryParking } from './history_parking/entities/history_parking.entity';
+import { CurrentParkingsModule } from './current_parkings/current_parkings.module';
+import { CurrentParking } from './current_parkings/entities/current_parking.entity';
 
 @Module({
   imports: [
@@ -23,13 +25,14 @@ import { HistoryParking } from './history_parking/entities/history_parking.entit
       username: process.env.DBUSER,
       password: process.env.DBPASSWORD,
       database: process.env.DBNAME,
-      entities: [User, Parking, HistoryParking],
+      entities: [User, Parking, HistoryParking, CurrentParking],
       synchronize: true,
     }),
     AuthModule,
     UsersModule,
     ParkingsModule,
     HistoryParkingModule,
+    CurrentParkingsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
