@@ -1,15 +1,6 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param } from '@nestjs/common';
 import { CurrentParkingsService } from './current_parkings.service';
-import { CreateCurrentParkingDto } from './dto/create-current_parking.dto';
-import { UpdateCurrentParkingDto } from './dto/update-current_parking.dto';
+import { CurrentParkingDto } from './dto/create-current_parking.dto';
 
 @Controller('current-parkings')
 export class CurrentParkingsController {
@@ -18,7 +9,7 @@ export class CurrentParkingsController {
   ) {}
 
   @Post()
-  create(@Body() createCurrentParkingDto: CreateCurrentParkingDto) {
+  create(@Body() createCurrentParkingDto: CurrentParkingDto) {
     return this.currentParkingsService.create(createCurrentParkingDto);
   }
 
@@ -27,11 +18,11 @@ export class CurrentParkingsController {
     return this.currentParkingsService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.currentParkingsService.findOne(+id);
+  @Get(':plate')
+  findOne(@Param('plate') plate: string) {
+    return this.currentParkingsService.findByPlateLike(plate);
   }
-
+  /*
   @Patch(':id')
   update(
     @Param('id') id: string,
@@ -39,9 +30,9 @@ export class CurrentParkingsController {
   ) {
     return this.currentParkingsService.update(+id, updateCurrentParkingDto);
   }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.currentParkingsService.remove(+id);
+*/
+  @Post('out')
+  remove(@Body() checkoutCurrentParkingDto: CurrentParkingDto) {
+    return this.currentParkingsService.checkout(checkoutCurrentParkingDto);
   }
 }

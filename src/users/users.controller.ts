@@ -1,8 +1,7 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
-import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller('users')
 export class UsersController {
@@ -13,7 +12,6 @@ export class UsersController {
     return await this.usersService.findAll();
   }
 
-  @UseGuards(AuthGuard)
   @Post('')
   async create(@Body() usario: CreateUserDto): Promise<User> {
     return await this.usersService.create(usario);

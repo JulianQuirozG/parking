@@ -1,4 +1,11 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BeforeInsert,
+  BeforeUpdate,
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { ROL } from '../enum/users.enum';
 import { Parking } from 'src/parkings/entities/parking.entity';
 
@@ -25,4 +32,14 @@ export class User {
 
   @OneToMany(() => Parking, (parking) => parking.partner)
   parkings: Parking[];
+
+  @BeforeInsert()
+  checkFueldsBeforeInsert() {
+    this.email = this.email.toLowerCase().trim();
+  }
+
+  @BeforeUpdate()
+  checkFueldsBeforeUpdate() {
+    this.checkFueldsBeforeInsert();
+  }
 }

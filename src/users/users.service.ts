@@ -23,6 +23,10 @@ export class UsersService {
   }
 
   async create(createUserDto: CreateUserDto) {
+    const userExist = await this.findOneByEmail(createUserDto.email);
+    if (userExist) {
+      throw new ConflictException('El email ya está registrado');
+    }
     try {
       const user = this.userRepository.create({
         name: createUserDto.name,
@@ -32,7 +36,7 @@ export class UsersService {
       });
       return await this.userRepository.save(user);
     } catch {
-      throw new ConflictException('El email ya está registrado');
+      throw new BadRequestException();
     }
   }
 
@@ -59,7 +63,9 @@ export class UsersService {
   async findOneByEmail(email: string): Promise<User> {
     try {
       let user: User | null = null;
-      user = await this.userRepository.findOne({ where: { email: email } });
+      user = await this.userRepository.findOne({
+        where: { email: email.toLocaleLowerCase().trim() },
+      });
 
       if (!user) {
         throw new NotFoundException(`User with email '${email}' not found`);
@@ -70,6 +76,24 @@ export class UsersService {
         throw error;
       }
       throw new BadRequestException();
+    }
+  }
+
+  async createAdmin() {
+    const userExist = await this.findOneByEmail('admin@mail.com');
+    if (userExist) {
+      throw new ConflictException('El email ya está registrado');
+    }
+    try {
+      const user = this.userRepository.create({
+        name: 'Admin',
+        email: 'admin@mail.com',
+        type: ROL.ADMIN,
+        password: bcrypt.hashSync('admin', 10),
+      });
+      return await this.userRepository.save(user);
+    } catch {
+      throw new ConflictException('El email ya está registrado');
     }
   }
 }

@@ -12,12 +12,6 @@ export class CurrentParking {
   @Column()
   initDay: Date;
 
-  @Column()
-  finishDay: Date;
-
-  @Column({ default: 0 })
-  Amount: number;
-
   @ManyToOne(() => Parking, (parking) => parking.current)
   parking: Parking;
 }
