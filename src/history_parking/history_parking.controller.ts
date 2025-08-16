@@ -27,7 +27,7 @@ export class HistoryParkingController {
     return this.historyParkingService.update(+id, updateHistoryParkingDto);
   }
 */
-  @Post(':id')
+  @Delete(':id')
   remove(@Param('id') id: string) {
     return this.historyParkingService.remove(+id);
   }

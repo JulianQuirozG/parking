@@ -32,9 +32,6 @@ export class HistoryParkingService {
     const diff: number =
       today.diff(createHistoryParkingDto.initDay) / (1000 * 60 * 60);
     const amount = diff * parking.costperhour;
-    console.log(
-      `fecha 1 ${createHistoryParkingDto.initDay.toString()}, fecha 2 ${today.toDate().toString()} diferencia es ${diff}, asmo ${amount}`,
-    );
     const history = this.historyParkingRepository.create({
       id: createHistoryParkingDto.id,
       initDay: createHistoryParkingDto.initDay,
