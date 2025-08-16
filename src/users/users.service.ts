@@ -17,6 +17,9 @@ export class UsersService {
     @InjectRepository(User)
     private userRepository: Repository<User>,
   ) {}
+  async onModuleInit() {
+    await this.createAdmin();
+  }
 
   async findAll(): Promise<User[]> {
     return await this.userRepository.find();
@@ -80,9 +83,12 @@ export class UsersService {
   }
 
   async createAdmin() {
-    const userExist = await this.findOneByEmail('admin@mail.com');
+    const userExist = await this.userRepository.findOne({
+      where: { email: 'admin@mail.com' },
+    });
     if (userExist) {
-      throw new ConflictException('El email ya está registrado');
+      console.log('Usuario admin ya está registrado');
+      return;
     }
     try {
       const user = this.userRepository.create({
@@ -91,9 +97,11 @@ export class UsersService {
         type: ROL.ADMIN,
         password: bcrypt.hashSync('admin', 10),
       });
-      return await this.userRepository.save(user);
+      const admin = await this.userRepository.save(user);
+      console.log('Usuario admin registrado correctamente');
+      return admin;
     } catch {
-      throw new ConflictException('El email ya está registrado');
+      console.log('Usuario admin ya está registrado');
     }
   }
 }
