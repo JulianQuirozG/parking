@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param } from '@nestjs/common';
 import { HistoryParkingService } from './history_parking.service';
 import { CreateHistoryParkingDto } from './dto/create-history_parking.dto';
 //import { UpdateHistoryParkingDto } from './dto/update-history_parking.dto';

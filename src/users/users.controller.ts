@@ -2,6 +2,8 @@ import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
+import { RoleProtected } from 'src/auth/decorators/user-role.decorator';
+import { ROL } from './enum/users.enum';
 
 @Controller('users')
 export class UsersController {
@@ -12,6 +14,7 @@ export class UsersController {
     return await this.usersService.findAll();
   }
 
+  @RoleProtected(ROL.ADMIN)
   @Post('')
   async create(@Body() usario: CreateUserDto): Promise<User> {
     return await this.usersService.create(usario);

@@ -26,7 +26,9 @@ export class UsersService {
   }
 
   async create(createUserDto: CreateUserDto) {
-    const userExist = await this.findOneByEmail(createUserDto.email);
+    const userExist = await this.userRepository.findOne({
+      where: { email: createUserDto.email.toLocaleLowerCase().trim() },
+    });
     if (userExist) {
       throw new ConflictException('El email ya está registrado');
     }
