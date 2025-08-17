@@ -70,11 +70,13 @@ export class CurrentParkingsService {
   }
 
   async findOne(id: number): Promise<CurrentParking> {
+    console.log(id);
     if (!id) {
       throw new BadRequestException();
     }
     const current = await this.parkingCurrentRepository.findOne({
       where: { id: id },
+      relations: ['parking'],
     });
 
     if (!current) {

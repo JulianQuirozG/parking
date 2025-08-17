@@ -10,6 +10,7 @@ import { Parking } from './entities/parking.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UsersService } from '../users/users.service';
 import { User } from 'src/users/entities/user.entity';
+import { AuthUser } from 'src/common/interfaces/authUser.interface';
 
 @Injectable()
 export class ParkingsService {
@@ -43,9 +44,21 @@ export class ParkingsService {
     }
   }
 
-  findAll() {
+  async findAll() {
     try {
-      return this.parkingRepository.find({ relations: ['partner'] });
+      return await this.parkingRepository.find({ relations: ['partner'] });
+    } catch {
+      throw new BadRequestException();
+    }
+  }
+
+  async findAllByUser(user: AuthUser) {
+    const userExist = await this.usersService.findOne(+user.sub);
+    try {
+      return await this.parkingRepository.find({
+        where: { partner: userExist },
+        relations: ['partner'],
+      });
     } catch {
       throw new BadRequestException();
     }
@@ -56,7 +69,7 @@ export class ParkingsService {
       if (!id) throw new BadRequestException();
       const parking = await this.parkingRepository.findOne({
         where: { id: id },
-        relations: ['partner'],
+        relations: ['partner', 'current'],
       });
 
       if (!parking) {
