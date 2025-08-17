@@ -10,8 +10,8 @@ Se comunica con un **microservicio de correos** para el envío simulado de notif
 
 ---
 ## 📂 Estructura del proyecto
-
-  parking-api/
+```bash
+parking-api/
 ├── src/
 │ ├── auth/
 │ ├── users/ 
@@ -38,7 +38,6 @@ Se comunica con un **microservicio de correos** para el envío simulado de notif
 
 Ejecuta el siguiente comando para crear el contenedor de PostgreSQL:
 
-```bash
 docker run --name parkingPG \
   -e POSTGRES_PASSWORD=ParkingPass \
   -e POSTGRES_DB=parkingDB \
@@ -50,7 +49,6 @@ docker run --name parkingPG \
 ## ⚙️ Configuración
 
 1. Clonar el repositorio:
-   ```bash
    git clone https://github.com/JulianQuirozG/parking.git
    cd parking
 
