@@ -1,7 +1,8 @@
- 🚗 Parking API - Nelumbo Test
+# 🚗 Parking API - Nelumbo Test
 
 API REST en **NestJS** para la gestión de parqueaderos, usuarios y control de vehículos.  
 Se comunica con un **microservicio de correos** para el envío simulado de notificaciones.
+
 ---
 ## 📂 MER
 
