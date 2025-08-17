@@ -26,14 +26,6 @@ parking-api/
 
 ---
 
-## 🛠️ Requisitos
-
-- **Node.js** >= 18
-- **PostgreSQL** >= 14
-- **Docker** (opcional, recomendado para BD)
-
----
-
 ## 🐘 Levantar la base de datos con Docker
 
 Ejecuta el siguiente comando para crear el contenedor de PostgreSQL:
