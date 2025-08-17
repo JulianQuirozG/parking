@@ -1,5 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import {
   BadRequestException,
+  HttpException,
+  HttpStatus,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -10,6 +16,9 @@ import { CurrentParking } from './entities/current_parking.entity';
 import { Repository } from 'typeorm';
 import { HistoryParkingService } from 'src/history_parking/history_parking.service';
 import moment from 'moment-timezone';
+import { SenddMailDto } from 'src/current_parkings/dto/sendEmail.dto';
+import { firstValueFrom } from 'rxjs';
+import { HttpService } from '@nestjs/axios';
 
 @Injectable()
 export class CurrentParkingsService {
@@ -18,6 +27,7 @@ export class CurrentParkingsService {
     private parkingCurrentRepository: Repository<CurrentParking>,
     private parkingsService: ParkingsService,
     private historyParkingService: HistoryParkingService,
+    private httpService: HttpService,
   ) {}
   async create(currentParkingDto: CurrentParkingDto) {
     // 1. Validar si la placa ya está en algun parqueadero
@@ -57,10 +67,13 @@ export class CurrentParkingsService {
     }
   }
 
-  async findAll() {
-    const result = await this.parkingCurrentRepository.find({
-      relations: ['parking'],
-    });
+  async findAll(id: number) {
+    const result = await this.parkingCurrentRepository
+      .createQueryBuilder('pc') // alias de ParkingCurrent
+      .leftJoinAndSelect('pc.parking', 'p') // relación
+      .where('p.id = :id', { id }) // condición
+      .getMany();
+
     return result.map((item) => ({
       ...item,
       initDay: moment(item.initDay)
@@ -178,6 +191,41 @@ export class CurrentParkingsService {
     } catch (error) {
       console.log(error);
       throw new BadRequestException();
+    }
+  }
+
+  async sendEmail(emailParams: SenddMailDto) {
+    const exist = await this.findOneByPlate(
+      emailParams.placa,
+      emailParams.parqueaderoId,
+    );
+    const url = 'http://localhost:3001/mail';
+    try {
+      const response = await firstValueFrom(
+        this.httpService.post(
+          url,
+          {
+            email: emailParams.email,
+            placa: emailParams.placa,
+            mensaje: emailParams.mensaje,
+            parqueaderoNombre: exist.parking.name,
+          },
+          {
+            headers: { 'Content-Type': 'application/json' },
+            timeout: 5000,
+          },
+        ),
+      );
+
+      return response.data;
+    } catch (error) {
+      throw new HttpException(
+        {
+          message: 'Error enviando correo',
+          error: error.response?.data || error.message,
+        },
+        error.response?.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 }

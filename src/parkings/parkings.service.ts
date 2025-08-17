@@ -32,7 +32,6 @@ export class ParkingsService {
         location: createParkingDto.location,
         capacity: createParkingDto.capacity,
         costperhour: createParkingDto.costperhour,
-        used: 0,
         partner: partner,
       });
       return await this.parkingRepository.save(parking);
@@ -104,6 +103,7 @@ export class ParkingsService {
   }
 
   async remove(id: number) {
+    await this.findOne(+id);
     try {
       const parking = await this.findOne(id);
       return await this.parkingRepository.remove(parking);

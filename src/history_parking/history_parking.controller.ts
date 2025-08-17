@@ -1,6 +1,9 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, UseGuards } from '@nestjs/common';
 import { HistoryParkingService } from './history_parking.service';
 import { CreateHistoryParkingDto } from './dto/create-history_parking.dto';
+import { RoleProtected } from 'src/auth/decorators/user-role.decorator';
+import { ROL } from 'src/users/enum/users.enum';
+import { EarningsParkingGuard } from './guards/earnings.guard';
 //import { UpdateHistoryParkingDto } from './dto/update-history_parking.dto';
 
 @Controller('history-parking')
@@ -42,6 +45,8 @@ export class HistoryParkingController {
     return await this.historyParkingService.TopTenVehicles(+parkingId);
   }
 
+  @RoleProtected(ROL.SOCIO)
+  @UseGuards(EarningsParkingGuard)
   @Get('/Earnings/:id')
   async earningsByParkingId(@Param('id') parkingId: number) {
     return await this.historyParkingService.earnings(+parkingId);

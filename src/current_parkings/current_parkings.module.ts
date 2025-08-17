@@ -5,12 +5,14 @@ import { CurrentParking } from './entities/current_parking.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ParkingsModule } from 'src/parkings/parkings.module';
 import { HistoryParkingModule } from 'src/history_parking/history_parking.module';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([CurrentParking]),
     ParkingsModule,
     forwardRef(() => HistoryParkingModule),
+    HttpModule,
   ],
   controllers: [CurrentParkingsController],
   providers: [CurrentParkingsService],

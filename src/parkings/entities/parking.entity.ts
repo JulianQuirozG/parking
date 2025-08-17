@@ -23,9 +23,6 @@ export class Parking {
   @Column()
   capacity: number;
 
-  @Column({ default: 0 })
-  used: number;
-
   @Column()
   costperhour: number;
 

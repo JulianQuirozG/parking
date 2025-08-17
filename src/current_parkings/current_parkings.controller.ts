@@ -1,8 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 import { Controller, Get, Post, Body, Param, UseGuards } from '@nestjs/common';
 import { CurrentParkingsService } from './current_parkings.service';
 import { CurrentParkingDto } from './dto/create-current_parking.dto';
 import { findOneDataParking } from './guards/findOneParking.guard';
 import { checkOwnerControlParking } from './guards/ParkingControl.guard';
+import { SenddMailDto } from './dto/sendEmail.dto';
+import { CurrentParkingSearchDto } from './dto/create-current-search_parking.dto';
 
 @Controller('current-parkings')
 export class CurrentParkingsController {
@@ -15,14 +18,17 @@ export class CurrentParkingsController {
     return await this.currentParkingsService.create(createCurrentParkingDto);
   }
 
-  @Get()
-  async findAll() {
-    return await this.currentParkingsService.findAll();
+  @Get(':id')
+  async findAll(@Param('id') id: number) {
+    return await this.currentParkingsService.findAll(+id);
   }
 
-  @Get('plate/:plate')
-  async findOne(@Param('plate') plate: string) {
-    return await this.currentParkingsService.findByPlateLike(plate);
+  @Post('plate')
+  async findOne(@Body() createCurrentParkingDto: CurrentParkingSearchDto) {
+    return await this.currentParkingsService.findByPlateLike(
+      createCurrentParkingDto.plate,
+      createCurrentParkingDto.parking,
+    );
   }
 
   @UseGuards(findOneDataParking)
@@ -45,5 +51,10 @@ export class CurrentParkingsController {
     return await this.currentParkingsService.checkout(
       checkoutCurrentParkingDto,
     );
+  }
+
+  @Post('sendEmail')
+  async sendEmail(@Body() sendEmail: SenddMailDto) {
+    return await this.currentParkingsService.sendEmail(sendEmail);
   }
 }

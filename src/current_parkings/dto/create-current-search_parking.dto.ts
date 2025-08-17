@@ -1,18 +1,9 @@
-import {
-  IsNumber,
-  IsString,
-  IsUppercase,
-  Matches,
-  MaxLength,
-  MinLength,
-} from 'class-validator';
+import { IsNumber, IsString, IsUppercase, Matches } from 'class-validator';
 
-export class CurrentParkingDto {
+export class CurrentParkingSearchDto {
   @IsString()
-  @MinLength(6)
-  @MaxLength(6)
   @IsUppercase()
-  @Matches(/^[A-Za-z0-9]{6}$/, {
+  @Matches(/^[A-Za-z0-9]/, {
     message:
       'La placa solo puede contener letras y números, sin caracteres especiales ni la letra ñ',
   })
