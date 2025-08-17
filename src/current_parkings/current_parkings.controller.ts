@@ -27,7 +27,6 @@ export class CurrentParkingsController {
   async findOne(@Body() createCurrentParkingDto: CurrentParkingSearchDto) {
     return await this.currentParkingsService.findByPlateLike(
       createCurrentParkingDto.plate,
-      createCurrentParkingDto.parking,
     );
   }
 
