@@ -30,11 +30,11 @@ parking-api/
 
 Ejecuta el siguiente comando para crear el contenedor de PostgreSQL:
 
-docker run --name parkingPG \
-  -e POSTGRES_PASSWORD=ParkingPass \
-  -e POSTGRES_DB=parkingDB \
-  -e POSTGRES_USER=AdminP \
-  -p 5432:5432 \
+docker run --name parkingPG `
+  -e POSTGRES_PASSWORD=ParkingPass `
+  -e POSTGRES_DB=parkingDB `
+  -e POSTGRES_USER=AdminP `
+  -p 5432:5432 `
   -d postgres:alpine
 
 
